@@ -2,13 +2,13 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const app = express();
 
-const port = process.env.PORT;
+const app = express();
+const PORT = process.env.PORT || 4000;
 
 // middleware
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("uploads"));
 
@@ -21,4 +21,4 @@ mongoose
 // routes
 app.use("/api/posts", require("./routes/routes"));
 
-app.listen(port, () => console.log("server running on port " + port));
+app.listen(PORT, () => console.log("server running on port " + PORT));
