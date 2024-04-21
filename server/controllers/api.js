@@ -1,5 +1,4 @@
-const post = require("../models/post");
-const Post = require("../models/post");
+const Post = require("../models/Post");
 const fs = require("fs");
 module.exports = class API {
   static async fetchAllPosts(req, res) {
@@ -22,24 +21,25 @@ module.exports = class API {
 
   static async createPost(req, res) {
     const post = req.body;
-    const imageName = req.file.filename;
+    const imageName = req.file.originalname;
     post.image = imageName;
 
     try {
       await Post.create(post);
       res.status(201).json("Post Created Successfully");
     } catch (err) {
-      res.status(400).json({ mesasage: err.message });
+      res.status(400).json({ mesasage: err });
     }
   }
 
   static async updatePost(req, res) {
     const id = req.params.id;
     let new_img = "";
+    console.log(req.body.old_img);
     if (req.file) {
       new_img = req.file.filename;
       try {
-        fs.unlink("../uploads" + req.body.old_img);
+        fs.unlinkSync("../uploads/" + req.body.old_img);
       } catch (err) {
         console.log(err);
       }
@@ -52,7 +52,7 @@ module.exports = class API {
       await Post.findByIdAndUpdate(id, newPost);
       res.status(200).json({ message: "Post Updated Successfully" });
     } catch (err) {
-      res.status(404).json({ message: err.message });
+      res.status(404).json({ message: err });
     }
   }
   static async deletePost(req, res) {

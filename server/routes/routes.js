@@ -2,13 +2,14 @@ const express = require("express");
 const router = express.Router();
 const API = require("../controllers/api");
 const multer = require("multer");
-
+const path = require("path");
 let storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "./uploads");
+    cb(null, path.join(__dirname, "../uploads"));
   },
   filename: function (req, file, cb) {
-    cb(null, file.filename + "_" + Date.now() + "_" + file.originalname);
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
   },
 });
 
