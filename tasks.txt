@@ -1,6 +1,0 @@
-=> get posts data from chat-gpt : done   
-=> added data from seeder : done 
-=> posts => back : get , get:id , put  , post , delete
-=> upload image backend 
-=> implement ui 
-=> binding data 

@@ -1,6 +1,7 @@
 // Plugins
 import vue from "@vitejs/plugin-vue";
 import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
+// import Unocss from "unocss/vite";
 
 // Utilities
 import { defineConfig } from "vite";
@@ -15,9 +16,7 @@ export default defineConfig({
     vue({
       template: { transformAssetUrls },
     }),
-    // Unocss({
-    //   presets: [presetAttributify(), presetUno()], // Presets
-    // }),
+    // Unocss(),
 
     // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
     vuetify({

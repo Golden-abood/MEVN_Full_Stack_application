@@ -23,7 +23,13 @@
 </template>
 
 <script setup lang="ts">
-const items: object[] = [
+type itemsType = {
+  icon: string;
+  title: string;
+  link: string;
+};
+
+const items: itemsType[] = [
   {
     icon: "mdi-home",
     title: "Home",
@@ -34,11 +40,11 @@ const items: object[] = [
     title: "Add Post",
     link: "/add-post",
   },
-  {
-    icon: "mdi-heart-flash",
-    title: "About",
-    link: "/About",
-  },
+  // {
+  //   icon: "mdi-heart-flash",
+  //   title: "About",
+  //   link: "/About",
+  // },
 ];
 </script>
 

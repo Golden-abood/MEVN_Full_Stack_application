@@ -9,6 +9,7 @@ module.exports = class API {
       res.status(404).json({ mesasage: err.message });
     }
   }
+
   static async fetchPostById(req, res) {
     const id = req.params.id;
     try {
@@ -23,6 +24,7 @@ module.exports = class API {
     const post = req.body;
     const imageName = req.file.originalname;
     post.image = imageName;
+    console.log(imageName);
 
     try {
       await Post.create(post);
@@ -34,27 +36,56 @@ module.exports = class API {
 
   static async updatePost(req, res) {
     const id = req.params.id;
-    let new_img = "";
-    console.log(req.body.old_img);
+    let new_img = req.body.old_img; // Default to old image if no new image is uploaded
+
     if (req.file) {
-      new_img = req.file.filename;
-      try {
-        fs.unlinkSync("../uploads/" + req.body.old_img);
-      } catch (err) {
-        console.log(err);
+      new_img = req.file; // New image uploaded
+      console.log("New image uploaded:", new_img);
+
+      // Delete old image if it exists
+      if (req.body.old_img) {
+        const oldImagePath = path.join(
+          __dirname,
+          "..",
+          "uploads",
+          req.body.old_img
+        ); // Ensure correct path
+        try {
+          if (fs.existsSync(oldImagePath)) {
+            fs.unlinkSync(oldImagePath);
+            console.log("Old image deleted successfully.");
+          } else {
+            console.log("Old image not found.");
+          }
+        } catch (err) {
+          console.error("Error deleting old image:", err);
+        }
       }
-    } else {
-      new_img = req.body.old_img;
     }
-    const newPost = req.body;
-    newPost.image = new_img;
+
+    // Prepare the updated post data
+    const newPost = { ...req.body, image: new_img };
+
     try {
-      await Post.findByIdAndUpdate(id, newPost);
-      res.status(200).json({ message: "Post Updated Successfully" });
+      // Update the post in the database
+      const updatedPost = await Post.findByIdAndUpdate(id, newPost, {
+        new: true,
+      });
+      if (!updatedPost) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+      console.log("Updated post:", updatedPost); // Log the updated post
+      res
+        .status(200)
+        .json({ message: "Post Updated Successfully", post: updatedPost });
     } catch (err) {
-      res.status(404).json({ message: err });
+      console.error("Error updating post:", err);
+      res
+        .status(500)
+        .json({ message: "Failed to update post", error: err.message });
     }
   }
+
   static async deletePost(req, res) {
     const id = req.params.id;
     try {
@@ -72,43 +103,3 @@ module.exports = class API {
     }
   }
 };
-
-// static async fetchAllPost(req, res) {
-//   try {
-//     const posts = await Post.find();
-//     res.status(200).json(posts);
-//   } catch (err) {
-//     res.status(404).json({ message: err.message });
-//   }
-// }
-// static async fetchPostById(req, res) {
-//   const id = req.params.id;
-//   try {
-//     const post = await Post.findById(id);
-//     res.status(200).json(post);
-//   } catch (err) {
-//     res.status(404).json({ message: err.message });
-//   }
-// }
-// static async createPost(req, res) {
-//   const post = req.body;
-//   const imageName = req.file.filename;
-//   post.image = imageName;
-//   try {
-//     await Post.create(post);
-//     res.status(201).json({ message: "post created successfully" });
-//   } catch (err) {
-//     res.status(400).json({ message: err.message });
-//   }
-// }
-// static async updatePost(req, res) {
-//   const id = req.params.id;
-//   const post = req.body;
-//   try {
-//     await Post.patch(id);
-//     res.status(200).json({ message: "post updated successfully" });
-//   } catch (error) {
-//     res.status(400).json({ message: "error" });
-//   }
-// }
-// static async deletePost(req, res) {}

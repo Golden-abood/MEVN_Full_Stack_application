@@ -8,8 +8,7 @@ let storage = multer.diskStorage({
     cb(null, path.join(__dirname, "../uploads"));
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
+    cb(null, "-" + Date.now() + "-" + file.originalname);
   },
 });
 
@@ -23,7 +22,7 @@ router.get("/:id", API.fetchPostById);
 
 router.post("/", upload, API.createPost);
 
-router.patch("/:id", upload, API.updatePost);
+router.put("/:id", upload, API.updatePost);
 
 router.delete("/:id", API.deletePost);
 

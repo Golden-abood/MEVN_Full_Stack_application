@@ -8,11 +8,15 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 // middleware
-app.use(cors("3000"));
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("uploads"));
-
 // routes
 app.use("/api/posts", require("./routes/routes"));
 
